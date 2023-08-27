@@ -61,7 +61,7 @@ getFileExtension = (filename) => {
 
 // read the file and extract text
 exports.getText = async (filePath) => {
-  let fileContent = '';
+  let fileContent = '', fileHeaders = '', fileFootnotes = '', fileEndnotes = '';
 
   let data = fs.readFileSync(filePath);
   const fileExtension = getFileExtension(filePath);
@@ -78,6 +78,18 @@ exports.getText = async (filePath) => {
       var extractor = new WordExtractor();
       var extracted = await extractor.extract(filePath);
       fileContent = extracted.getBody();
+      fileHeaders = extracted.getHeaders();
+      if (fileHeaders.length > 0) {
+        fileContent = fileHeaders + fileContent;
+      }
+      fileFootnotes = extracted.getFootnotes();
+      if (fileFootnotes.length > 0) {
+        fileContent = fileContent + fileFootnotes;
+      }
+      fileEndnotes = extracted.getEndnotes();
+      if (fileEndnotes.length > 0) {
+        fileContent = fileContent + fileEndnotes;
+      }
       break;
 
     // read excel books
